@@ -1,0 +1,42 @@
+{
+    "patterns": {
+        "bullish_pinbar": {
+            "candle_count": 3,
+            "rules" : {
+                "and": [
+                    {
+                        "<=": [
+                            {
+                                "var": "second_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "range"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
