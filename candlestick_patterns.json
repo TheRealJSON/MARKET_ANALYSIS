@@ -24,6 +24,41 @@
                         ]
                     },
                     {
+                        ">": [
+                            {
+                                "min": [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "Open"
+                                    },
+                                    {
+                                        "var": "second_candle",
+                                        "property": "Price"
+                                    }
+                                ]
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "+": [
+                                            {
+                                                "var": "second_candle",
+                                                "property": "High"
+                                            },
+                                            {
+                                                "var": "second_candle",
+                                                "property": "Low"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "val": 2
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "<": [
                             {
                                 "var": "second_candle",
@@ -31,6 +66,42 @@
                             },
                             {
                                 "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "third_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "third_candle",
                                 "property": "Price"
                             }
                         ]
