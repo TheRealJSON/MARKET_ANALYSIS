@@ -38,7 +38,6 @@ class JSONLogicParser:
         
         return False
     
-
     def parseLeafNode(self, leafNode):
         result = ''
         operand = ''

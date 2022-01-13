@@ -137,10 +137,7 @@ if (bootstrap_success):
 
         # loop over candlestick patterns and check if any are present
         for key, candle_pattern in candlestick_patterns.items():
-            candlestick_dataCopy.at[index+1, 'bullish_pinbar'] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
-
-        # TODO: FOR SOME REASON. NEED TO USE index+1..one is 0 based on is not? iloc is diff to .at??
-
+            candlestick_dataCopy.at[index, 'bullish_pinbar'] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
 
     candlestick_data = candlestick_dataCopy
 
