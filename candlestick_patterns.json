@@ -108,6 +108,57 @@
                     }
                 ]
             }
+        },
+        "bearish three-line strike": {
+            "candle_count": 4,
+            "rules" : {
+                "and": [
+                    {
+                        ">=": [
+                            {    
+                                "var": "first_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "-": [
+                                    {
+                                        "var": "first_candle",
+                                        "property": "range"
+                                    },
+                                    {
+                                        "/": [
+                                            {
+                                                "var": "first_candle",
+                                                "property": "range"
+                                            },
+                                            {
+                                                "val": 5
+                                            }
+
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "within": [
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     }
 }

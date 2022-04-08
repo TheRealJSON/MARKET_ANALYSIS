@@ -54,7 +54,7 @@ def load_candlestick_patterns():
     success = False
 
     # Load Candlestick Pattern Definitions
-    read_candlestick_patterns_from_JSON('C:/Users/Jaso/Documents/Stock Market/candlestick_patterns.json')
+    read_candlestick_patterns_from_JSON('/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/candlestick_patterns.json')
 
     success = True #TODO: fix up over-engineered success flag system by adding error handling etc.
 
@@ -65,7 +65,7 @@ def load_candlestick_data():
 
     # Load Candlestick Pattern Definitions
     global candlestick_data
-    candlestick_data = pd.read_csv('C:/Users/Jaso/Documents/Stock Market/Bitcoin Historical Data.csv') # Returns a candlestick_data, 2D data structure
+    candlestick_data = pd.read_csv('/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/Bitcoin Historical Data.csv') # Returns a candlestick_data, 2D data structure
     candlestick_data.reset_index(drop=True) #needed for comparison of rows for some strange reason
 
     success = True #TODO: fix up over-engineered success flag system by adding error handling etc.
@@ -137,7 +137,7 @@ if (bootstrap_success):
 
         # loop over candlestick patterns and check if any are present
         for key, candle_pattern in candlestick_patterns.items():
-            candlestick_dataCopy.at[index, 'bullish_pinbar'] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
+            candlestick_dataCopy.at[index, candle_pattern.pattern_name] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
 
     candlestick_data = candlestick_dataCopy
 
@@ -152,7 +152,7 @@ if (bootstrap_success):
                 )
     data = [trace]
 
-    plot(data, filename='C:/Users/Jaso/Documents/Stock Market/go_candle1.html')
+    plot(data, filename='/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/go_candle1.html')
 
     # ====================================================
     # Calculate predictive success of candlestick patterns
@@ -174,14 +174,13 @@ if (bootstrap_success):
         candlestick_frame['second_candle']  = candlestick_dataCopy.iloc[index + 1,:]
         candlestick_frame['third_candle']   = candlestick_dataCopy.iloc[index + 2,:]
 
-        if candlestick_frame['first_candle']['bullish_pinbar'] == True: # if then check if flag was successful
+        for key, candle_pattern in candlestick_patterns.items():
+            if candlestick_frame['first_candle'][candle_pattern.pattern_name] == True: # if then check if flag was successful
+                runtime_success_criteria = JSONLogicParser.replaceStringPlaceholdersWithValues(success_criteria, candlestick_frame)
+                successful_guess = eval(runtime_success_criteria)
+                candlestick_dataCopy.at[index, (candle_pattern.pattern_name + '_success')] = successful_guess
 
 
-            runtime_success_criteria = JSONLogicParser.replaceStringPlaceholdersWithValues(success_criteria, candlestick_frame)
-            successful_guess = eval(runtime_success_criteria)
-            print(successful_guess)
-            print(runtime_success_criteria)
         
-
-    candlestick_dataCopy.to_csv("C:/Users/Jaso/Documents/Stock Market/out.csv")
+    candlestick_dataCopy.to_csv("/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/out.csv")
 

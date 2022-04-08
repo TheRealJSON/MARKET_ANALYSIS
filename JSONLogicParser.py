@@ -20,7 +20,8 @@ class JSONLogicParser:
         if type(variable) is not str:
             return False # operator must be string value
         
-        operators = ['<', '>', '<=', '>=', '=', '!=', '/', '+']
+        # TODO: when the operator isn't defined here, it results in expression evaluation error. Should handle that case
+        operators = ['<', '>', '<=', '>=', '=', '!=', '/', '+', '-'] 
 
         if (variable in operators):
             return True
@@ -31,7 +32,7 @@ class JSONLogicParser:
         if type(variable) is not str:
             return False # function must be string value
         
-        function_names = ['min']
+        function_names = ['min', 'within']
 
         if (variable in function_names):
             return True
@@ -103,6 +104,12 @@ class JSONLogicParser:
         runtime_string = string_with_placeholders # reset for current segment/frame iteration
 
         runtime_value_placeholders = re.findall(placeholder_regex, string_with_placeholders)
+        print ("string_with_placeholders value coming up!")
+        print(string_with_placeholders)
+        if ("5" in string_with_placeholders) :
+            print ("runtime_value_placeholders value coming up!")
+            print(runtime_value_placeholders)
+
 
         for property_placeholder in runtime_value_placeholders:
             object_identifier = re.search(placeholder_candle_regex, property_placeholder).group(0).replace('.', '')
