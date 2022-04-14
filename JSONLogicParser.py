@@ -64,8 +64,11 @@ class JSONLogicParser:
             result = str(result) + ' ' + str(current_node_value) + ' '
             result = result + self.inorderTraversal(child_nodes[0][1]) + ')'
         elif self.is_function(current_node_value): # if node requires function-version of preorder parsing
-            result = self.inorderTraversal(child_nodes[0][0])
-            result = result + ',' + self.inorderTraversal(child_nodes[0][1])
+            # if function then could be more than 2 branches/children
+            result = ''
+            for child_node in child_nodes[0]:
+                result = result + ',' + self.inorderTraversal(child_node)
+            result = str.lstrip(result, ',') # remove first comma
             result = str(current_node_value) + '(' + result + ') '
         elif self.is_logic_gate(current_node_value): # if node requires in-order parsing with >2 child nodes
             result = '('
@@ -104,11 +107,6 @@ class JSONLogicParser:
         runtime_string = string_with_placeholders # reset for current segment/frame iteration
 
         runtime_value_placeholders = re.findall(placeholder_regex, string_with_placeholders)
-        print ("string_with_placeholders value coming up!")
-        print(string_with_placeholders)
-        if ("5" in string_with_placeholders) :
-            print ("runtime_value_placeholders value coming up!")
-            print(runtime_value_placeholders)
 
 
         for property_placeholder in runtime_value_placeholders:
@@ -120,3 +118,42 @@ class JSONLogicParser:
             runtime_string = runtime_string.replace(property_placeholder, runtime_value)
     
         return runtime_string
+    
+    def within(value, first_boundary_value, second_boundary_value):
+        if (second_boundary_value > first_boundary_value): # if the range is positive
+            return eval(value + ' > ' + first_boundary_value + ' and ' + value + ' < ' + second_boundary_value) #TODO: eval() bad
+
+        # otherwise it's a negative range so the test for the codnition is different
+        return eval(value + ' < ' + first_boundary_value + ' and ' + value + ' > ' + second_boundary_value) #TODO: eval() bad
+
+    def resolveCustomFunctionsInRuntimeExpression(expression_str):
+        # for each custom function
+        # retrieve each occurence and its parameters from the given expression
+        # resolve each occurence
+        # plug result into expression
+        custom_functions = ["within"]
+        function_parameter_regex = "([0-9\.a-z]*)"
+        custom_function_regex_template = "PLACEHOLDER\([0-9\,\.]*\)"
+        custom_function_regex_runtime = custom_function_regex_template
+        print(expression_str)
+        for function_name in custom_functions: 
+            print("Iterating over custom_functions: " + function_name)
+            custom_function_regex_runtime = custom_function_regex_template.replace("PLACEHOLDER", function_name)
+            print("regex: " + custom_function_regex_runtime)
+            print(re.search(custom_function_regex_runtime, expression_str))
+            for function_call_regex_match in re.findall(custom_function_regex_runtime, expression_str):
+                # Get dynamic reference to current method
+                method = getattr(globals()["JSONLogicParser"], function_name) 
+                
+                # Extract parameters to pass into the method
+                for parameter_regex_match in re.findall(function_parameter_regex, function_call_regex_match):
+                    print('wooooooooiii:  ' + parameter_regex_match)
+                
+
+                boolResult = method(True)
+            
+
+
+        return False
+
+
