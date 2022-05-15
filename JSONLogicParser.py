@@ -82,17 +82,15 @@ class JSONLogicParser:
         return result
 
     def inorderTraversal(self, root):
-        result = []
         current_node = list(root.keys())[0]
 
-        # if current node is NOT an operator then root was an edge leaf/node
+        # if current node is NOT an operator/function/logic_gate then root was an edge leaf/node
         # therefore, do processing for edge leaf
         if not self.is_operator(current_node) and not self.is_function(current_node) and not self.is_logic_gate(current_node):  
             return self.parseLeafNode(root)
 
-        result = self.parseBranchNode(root)
+        return self.parseBranchNode(root)
 
-        return result
     
     def convertJSONExpressionTreeToString(self, jsonExpressionTree):
         # TODO: case when unexpected format/structture?
@@ -109,13 +107,13 @@ class JSONLogicParser:
         runtime_value_placeholders = re.findall(placeholder_regex, string_with_placeholders)
 
 
-        for property_placeholder in runtime_value_placeholders:
-            object_identifier = re.search(placeholder_candle_regex, property_placeholder).group(0).replace('.', '')
-            property_identifier = re.search(placeholder_property_regex, property_placeholder).group(0).replace('.', '')
+        for value_placeholder in runtime_value_placeholders:
+            object_identifier = re.search(placeholder_candle_regex, value_placeholder).group(0).replace('.', '')
+            property_identifier = re.search(placeholder_property_regex, value_placeholder).group(0).replace('.', '')
 
             runtime_value = str(runtime_values[object_identifier][property_identifier])
 
-            runtime_string = runtime_string.replace(property_placeholder, runtime_value)
+            runtime_string = runtime_string.replace(value_placeholder, runtime_value)
     
         return runtime_string
     
@@ -126,34 +124,47 @@ class JSONLogicParser:
         # otherwise it's a negative range so the test for the codnition is different
         return eval(value + ' < ' + first_boundary_value + ' and ' + value + ' > ' + second_boundary_value) #TODO: eval() bad
 
+    # Replaces method references within an expression string
+    # with their return/resolved/evaluated values.
+    # ASSUMES EVERY METHOD HAS 3 PARAMETERS. TODO: Make better! might need to delegate based on param count
     def resolveCustomFunctionsInRuntimeExpression(expression_str):
         # for each custom function
         # retrieve each occurence and its parameters from the given expression
         # resolve each occurence
         # plug result into expression
         custom_functions = ["within"]
-        function_parameter_regex = "([0-9\.a-z]*)"
+        new_expression_str = expression_str
+
+        #function_parameter_regex = "([0-9\.a-z]*)"
+        function_parameter_regex = "(([A-Z0-9]|\.)*(,|\)))"
         custom_function_regex_template = "PLACEHOLDER\([0-9\,\.]*\)"
         custom_function_regex_runtime = custom_function_regex_template
-        print(expression_str)
+
         for function_name in custom_functions: 
-            print("Iterating over custom_functions: " + function_name)
             custom_function_regex_runtime = custom_function_regex_template.replace("PLACEHOLDER", function_name)
-            print("regex: " + custom_function_regex_runtime)
-            print(re.search(custom_function_regex_runtime, expression_str))
             for function_call_regex_match in re.findall(custom_function_regex_runtime, expression_str):
                 # Get dynamic reference to current method
-                method = getattr(globals()["JSONLogicParser"], function_name) 
+                method = getattr(globals()["JSONLogicParser"], function_name)
                 
-                # Extract parameters to pass into the method
-                for parameter_regex_match in re.findall(function_parameter_regex, function_call_regex_match):
-                    print('wooooooooiii:  ' + parameter_regex_match)
-                
+                # Extract parameters to pass into the method - ASSUME 3 PARAMETERS
+                param_regex_matches = re.findall(function_parameter_regex, function_call_regex_match)
+                first_parameter = param_regex_matches[0][0].rstrip(",)") # The regex pat results in trailing , or )
+                second_parameter = param_regex_matches[1][0].rstrip(",)")# The regex pat results in trailing , or )
+                third_parameter = param_regex_matches[2][0].rstrip(",)") # The regex pat results in trailing , or )
 
-                boolResult = method(True)
-            
+                print(function_call_regex_match)
+                print("1st: " + first_parameter)
+                print("2st: " + second_parameter)
+                print("3st: " + third_parameter)
 
+                #for parameter_regex_match in re.findall(function_parameter_regex, function_call_regex_match):
+                #    print('woiiii')
+                #    print (parameter_regex_match[0])
+        
+                function_call_result = method(first_parameter, second_parameter, third_parameter) # ASSUME 3 PARAMS FOR CUSTOM FUNCTIONS
+                print("FINISHED calling method")
+                # plug result into the expression string
+                new_expression_str = new_expression_str.replace(function_call_regex_match, str(function_call_result))
 
-        return False
-
+        return new_expression_str
 

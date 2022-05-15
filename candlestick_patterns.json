@@ -109,7 +109,7 @@
                 ]
             }
         },
-        "bearish three-line strike": {
+        "bearish_three-line_strike": {
             "candle_count": 4,
             "rules" : {
                 "and": [

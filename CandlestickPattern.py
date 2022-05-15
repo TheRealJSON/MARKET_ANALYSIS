@@ -10,16 +10,13 @@ class CandlestickPattern:
         self.candle_count = candle_count 
         self.rules_expression = rules
 
-    
-
-    
-
 
     def check_candlesticks_match_pattern(self, candlesticks):
         runtime_rules_expression = JSONLogicParser.replaceStringPlaceholdersWithValues(self.rules_expression, candlesticks)
-        JSONLogicParser.resolveCustomFunctionsInRuntimeExpression(runtime_rules_expression)
+        runtime_rules_expression = JSONLogicParser.resolveCustomFunctionsInRuntimeExpression(runtime_rules_expression)
 
         #method = getattr(globals()["JSONLogicParser"], "resolveCustomFunctionsInRuntimeExpression")
         #boolResult = method(True)
-
+        print("WAAAAYYYYYY")
+        print(runtime_rules_expression)
         return eval(runtime_rules_expression) #TODO: NEED TO VALIDATE the expression before dangerous eval()
