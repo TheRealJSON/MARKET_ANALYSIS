@@ -1,6 +1,4 @@
-from cProfile import run
 import re
-from typing_extensions import runtime
 from JSONLogicParser import JSONLogicParser
 
 class CandlestickPattern:
@@ -13,10 +11,8 @@ class CandlestickPattern:
 
     def check_candlesticks_match_pattern(self, candlesticks):
         runtime_rules_expression = JSONLogicParser.replaceStringPlaceholdersWithValues(self.rules_expression, candlesticks)
-        runtime_rules_expression = JSONLogicParser.resolveCustomFunctionsInRuntimeExpression(runtime_rules_expression)
-
-        #method = getattr(globals()["JSONLogicParser"], "resolveCustomFunctionsInRuntimeExpression")
-        #boolResult = method(True)
-        print("WAAAAYYYYYY")
-        print(runtime_rules_expression)
+        
+        if (eval(runtime_rules_expression)):
+            print(self.rules_expression)
+            print (runtime_rules_expression)
         return eval(runtime_rules_expression) #TODO: NEED TO VALIDATE the expression before dangerous eval()
