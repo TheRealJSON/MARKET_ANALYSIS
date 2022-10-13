@@ -17,6 +17,5 @@ class CandlestickPattern:
 
         #method = getattr(globals()["JSONLogicParser"], "resolveCustomFunctionsInRuntimeExpression")
         #boolResult = method(True)
-        print("WAAAAYYYYYY")
-        print(runtime_rules_expression)
+        #print(runtime_rules_expression)
         return eval(runtime_rules_expression) #TODO: NEED TO VALIDATE the expression before dangerous eval()

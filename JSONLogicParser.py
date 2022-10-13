@@ -1,3 +1,4 @@
+from ast import And
 import re
 
 class JSONLogicParser:
@@ -32,7 +33,7 @@ class JSONLogicParser:
         if type(variable) is not str:
             return False # function must be string value
         
-        function_names = ['min', 'within']
+        function_names = ['min', 'within', 'multiply']
 
         if (variable in function_names):
             return True
@@ -124,6 +125,10 @@ class JSONLogicParser:
         # otherwise it's a negative range so the test for the codnition is different
         return eval(value + ' < ' + first_boundary_value + ' and ' + value + ' > ' + second_boundary_value) #TODO: eval() bad
 
+    def multiply(value, multiplier):
+        return float(value) * float(multiplier)
+
+
     # Replaces method references within an expression string
     # with their return/resolved/evaluated values.
     # ASSUMES EVERY METHOD HAS 3 PARAMETERS. TODO: Make better! might need to delegate based on param count
@@ -132,37 +137,33 @@ class JSONLogicParser:
         # retrieve each occurence and its parameters from the given expression
         # resolve each occurence
         # plug result into expression
-        custom_functions = ["within"]
+        custom_functions = ["within", "multiply"]
         new_expression_str = expression_str
 
         #function_parameter_regex = "([0-9\.a-z]*)"
-        function_parameter_regex = "(([A-Z0-9]|\.)*(,|\)))"
-        custom_function_regex_template = "PLACEHOLDER\([0-9\,\.]*\)"
+        function_parameter_regex = "((-*[A-Z0-9]|\.)*(,|\)))"
+        custom_function_regex_template = "PLACEHOLDER\(-*[0-9\,\.]*\)"
         custom_function_regex_runtime = custom_function_regex_template
 
         for function_name in custom_functions: 
             custom_function_regex_runtime = custom_function_regex_template.replace("PLACEHOLDER", function_name)
             for function_call_regex_match in re.findall(custom_function_regex_runtime, expression_str):
-                # Get dynamic reference to current method
+                # Get dynamic reference to current method so we can execute it dynamically
                 method = getattr(globals()["JSONLogicParser"], function_name)
-                
-                # Extract parameters to pass into the method - ASSUME 3 PARAMETERS
+
+                # Extract parameters to pass into the method
                 param_regex_matches = re.findall(function_parameter_regex, function_call_regex_match)
-                first_parameter = param_regex_matches[0][0].rstrip(",)") # The regex pat results in trailing , or )
-                second_parameter = param_regex_matches[1][0].rstrip(",)")# The regex pat results in trailing , or )
-                third_parameter = param_regex_matches[2][0].rstrip(",)") # The regex pat results in trailing , or )
+                param_value_list = []
+                for i in range(len(param_regex_matches)): # could be any number of parameters therefore base on regex match length
+                    param_value_list.append(param_regex_matches[i][0].rstrip(",)")) # The regex pat results in trailing , or )
 
-                print(function_call_regex_match)
-                print("1st: " + first_parameter)
-                print("2st: " + second_parameter)
-                print("3st: " + third_parameter)
+                # At the moment there is only 2-3 params. Need to refactor when new methods added.
+                if len(param_value_list) == 2:
+                    function_call_result = method(param_value_list[0], param_value_list[1]) # ASSUME 3 PARAMS FOR CUSTOM FUNCTIONS
+                else: # will be 3
+                    function_call_result = method(param_value_list[0], param_value_list[1], param_value_list[1]) # ASSUME 3 PARAMS FOR CUSTOM FUNCTIONS
 
-                #for parameter_regex_match in re.findall(function_parameter_regex, function_call_regex_match):
-                #    print('woiiii')
-                #    print (parameter_regex_match[0])
-        
-                function_call_result = method(first_parameter, second_parameter, third_parameter) # ASSUME 3 PARAMS FOR CUSTOM FUNCTIONS
-                print("FINISHED calling method")
+                #function_call_result = method(first_parameter, second_parameter, third_parameter) # ASSUME 3 PARAMS FOR CUSTOM FUNCTIONS
                 # plug result into the expression string
                 new_expression_str = new_expression_str.replace(function_call_regex_match, str(function_call_result))
 

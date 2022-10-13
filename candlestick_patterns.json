@@ -142,6 +142,18 @@
                         ]
                     },
                     {
+                        "<": [
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    },
+                    {
                         "within": [
                             {
                                 "var": "second_candle",
@@ -154,6 +166,368 @@
                             {
                                 "var": "first_candle",
                                 "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "third_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "third_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    },
+                    {
+                        "within": [
+                            {
+                                "var": "third_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "third_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "fourth_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "fourth_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "fourth_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "bullish_three-line_strike": {
+            "candle_count": 4,
+            "rules" : {
+                "and": [
+                    {
+                        ">=": [
+                            {    
+                                "var": "first_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "-": [
+                                    {
+                                        "var": "first_candle", 
+                                        "property": "range"
+                                    },
+                                    {
+                                        "/": [
+                                            {
+                                                "var": "first_candle",
+                                                "property": "range"
+                                            },
+                                            {
+                                                "val": 5
+                                            }
+
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "within": [
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "upside_tasuki_gap": {
+            "candle_count": 6,
+            "rules" : {
+                "and": [
+                    {
+                        "<": [
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "second_candle",
+                                "property": "Low"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "High"
+                            }
+                        ]
+                    },
+                    {
+                        "<": [
+                            {
+                                "var": "third_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "third_candle",
+                                "property": "Open"
+                            }
+                        ]
+                    },
+                    {
+                        "within": [
+                            {
+                                "var": "third_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "third_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "fourth_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "fifth_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "sixth_candle",
+                                "property": "Price"
+                            },
+                            {
+                                "var": "second_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "inverted_hammer": {
+            "candle_count": 2,
+            "rules" : {
+                "and": [
+                    {
+                        ">=": [
+                            {
+                                "var": "first_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "first_candle",
+                                        "property": "range"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "first_candle",
+                                "property": "Open"
+                            },
+                            {
+                                "var": "first_candle",
+                                "property": "Price"
+                            }
+                        ]
+                    },
+                    {
+                        "<=": [
+                            {
+                                "var": "second_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "range"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        ">": [
+                            {
+                                "var": "second_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "-" : [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "Price"
+                                    },
+                                    {
+                                        "var": "second_candle",
+                                        "property": "Low"
+                                    }
+                                ]
+                            }
+                        ] 
+                    },
+                    {
+                        ">=": [
+                            {
+                                "-" : [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "High"
+                                    },
+                                    {
+                                        "var": "second_candle",
+                                        "property": "Open"
+                                    }
+                                ]
+                            },
+                            {
+                                "multiply": [
+                                    {
+                                        "var": "second_candle",
+                                        "property": "realbody"
+                                    },
+                                    {
+                                        "val": 2.5
+                                    }
+                                ]
                             }
                         ]
                     }

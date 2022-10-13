@@ -19,7 +19,7 @@ from CandlestickPattern import CandlestickPattern
 import re
 
 global candlestick_patterns
-candlestick_patterns = {}
+candlestick_patterns = {} #TODO: check patterns that require a (down)trend before occuring and make sure definitio includes that
 global candlestick_data 
 candlestick_data = {}
 
@@ -30,25 +30,14 @@ def read_candlestick_patterns_from_JSON(configFilePath):
     
     data = json.load(configFile)
 
-    for candle_pattern in data['patterns']:
+    for candle_pattern in data['patterns']: # makes assumptions about format of JSON file
         pattern_candle_count = data['patterns'][candle_pattern]['candle_count']
         pattern_rules_tree = data['patterns'][candle_pattern]['rules']
 
         pattern_rules_string = pattern_config_parser.convertJSONExpressionTreeToString(pattern_rules_tree)
-         
         candlestick_patterns[candle_pattern] = CandlestickPattern(candle_pattern, pattern_candle_count, pattern_rules_string)
 
     configFile.close()
-
-
-def classify_bullish_swing(first_candle, second_candle, third_candle):
-    first_candle_low = first_candle['Low']
-    second_candle_low = second_candle['Low']
-    third_candle_low = third_candle['Low']
-
-    is_bullish_swing = first_candle_low > second_candle_low and second_candle_low < third_candle_low
-
-    return is_bullish_swing
 
 def load_candlestick_patterns():
     success = False
@@ -58,7 +47,7 @@ def load_candlestick_patterns():
 
     success = True #TODO: fix up over-engineered success flag system by adding error handling etc.
 
-    return success
+    return success  
 
 def load_candlestick_data():
     success = False
@@ -96,7 +85,7 @@ def bootstrap():
     # ==================================
     # Load Candlestick Pattern Definitions
     # ==================================
-    bootstrap_success = load_candlestick_patterns()
+    bootstrap_success =  load_candlestick_patterns()
 
     # ==================================
     # Load Candlestick Price Data
@@ -126,22 +115,29 @@ if (bootstrap_success):
         # TODO: fix, but cmon not got time for this bs now
         index = index - 1
 
-        if index < 3:
-            index = 3 #inefficient quickfix to bullshit
+        candlestick_frame_size = 6 # IF INDEX REFERENCE IS LESS THAN 0 IT LOOPS AROUND - NOT AN INVALID REF ERROR
+        if index < candlestick_frame_size:
+            index = candlestick_frame_size #inefficient quickfix to bullshit
 
         # dictionary used for dynamic var references
+        candlestick_frame_size = 6 # IF INDEX REFERENCE IS LESS THAN 0 IT LOOPS AROUND - NOT AN INVALID REF ERROR
         candlestick_frame = {} # can be confused with candlestick_data..rename?
-        candlestick_frame['first_candle']   = candlestick_dataCopy.iloc[index - 2,:]
-        candlestick_frame['second_candle']  = candlestick_dataCopy.iloc[index - 1,:]
-        candlestick_frame['third_candle']   = candlestick_dataCopy.iloc[index,:]
+        candlestick_frame['first_candle']   = candlestick_dataCopy.iloc[index - 5,:]
+        candlestick_frame['second_candle']  = candlestick_dataCopy.iloc[index - 4,:]
+        candlestick_frame['third_candle']   = candlestick_dataCopy.iloc[index - 3,:]
+        candlestick_frame['fourth_candle']  = candlestick_dataCopy.iloc[index - 2,:]
+        candlestick_frame['fifth_candle']   = candlestick_dataCopy.iloc[index - 1,:]
+        candlestick_frame['sixth_candle']   = candlestick_dataCopy.iloc[index,:]
 
         # loop over candlestick patterns and check if any are present
         for key, candle_pattern in candlestick_patterns.items():
-            candlestick_dataCopy.at[index, candle_pattern.pattern_name] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
+            candle_pattern_last_index = (index - candlestick_frame_size) + candle_pattern.candle_count #candle pattern might not need full frame size
+            candlestick_dataCopy.at[candle_pattern_last_index, candle_pattern.pattern_name] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
 
     candlestick_data = candlestick_dataCopy
+    candlestick_dataCopy.to_csv("/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/out.csv")
 
-    # Plot results on graph
+    # Plot results on graphely
     trace = go.Candlestick(
                 open=candlestick_dataCopy['Open'],
                 high=candlestick_dataCopy['High'],
@@ -182,5 +178,5 @@ if (bootstrap_success):
 
 
         
-    candlestick_dataCopy.to_csv("/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/out.csv")
+    #candlestick_dataCopy.to_csv("/Users/jasondejonge/Documents/Software Engineering/Market_Analysis/MARKET_ANALYSIS/out.csv")
 
