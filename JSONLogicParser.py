@@ -92,7 +92,11 @@ class JSONLogicParser:
 
         return self.parseBranchNode(root)
 
-    
+    """
+    Wrapper method used to convey the purpose of doing the INORDER traversal
+    :param jsonExpressionTree: Dictionary that results from reading an expression tree represented in JSON
+    :return: a String expression representation
+    """
     def convertJSONExpressionTreeToString(self, jsonExpressionTree):
         # TODO: case when unexpected format/structture?
         return self.inorderTraversal(jsonExpressionTree)
@@ -100,8 +104,8 @@ class JSONLogicParser:
     @staticmethod
     def replaceStringPlaceholdersWithValues(string_with_placeholders, runtime_values):
         placeholder_regex = '[_a-zA-Z]+\.[_a-zA-Z]+' # i.e. second_candle.length
-        placeholder_candle_regex = '[_a-zA-Z]+\.'
-        placeholder_property_regex = '\.[_a-zA-Z]+'
+        placeholder_candle_regex = '[_a-zA-Z]+\.'    # i.e. second_candle
+        placeholder_property_regex = '\.[_a-zA-Z]+'  # i.e. length
 
         runtime_string = string_with_placeholders # reset for current segment/frame iteration
 
