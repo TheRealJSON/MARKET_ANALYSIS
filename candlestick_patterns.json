@@ -533,6 +533,81 @@
                     }
                 ]
             }
+        },
+        "rising_three_methods": {
+            "candle_count": 5,
+            "rules" : {
+                "and": [
+                    {
+                        "==" : [
+                            {
+                                "var": "first_candle",
+                                "property": "is_uptrend"
+                            },
+                            {
+                                "val": true
+                            }
+                        ]
+                    },
+                    {
+                        "<=": [
+                            {
+                                "var": "second_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "first_candle",
+                                        "property": "realbody"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "<=": [
+                            {
+                                "var": "third_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "first_candle",
+                                        "property": "realbody"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "<=": [
+                            {
+                                "var": "fourth_candle",
+                                "property": "realbody"
+                            },
+                            {
+                                "/": [
+                                    {
+                                        "var": "first_candle",
+                                        "property": "realbody"
+                                    },
+                                    {
+                                        "val": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     }
 }

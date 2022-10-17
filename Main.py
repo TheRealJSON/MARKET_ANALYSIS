@@ -69,6 +69,10 @@ def load_derived_attributes():
 
     # Set pre-condition columns/attributes
     for index, row in candlestick_data.iterrows(): 
+        if index < 10: # REALLY SHIT WAY TO CALCULATE UPTREND
+            candlestick_dataCopy.at[index, 'is_uptrend'] = False
+        else :
+            candlestick_dataCopy.at[index, 'is_uptrend'] = candlestick_dataCopy.iloc[index,:]['Price'] > candlestick_dataCopy.iloc[index-10,:]['Price']
         candlestick_dataCopy.at[index, 'realbody'] = row['Open'] - row['Price']
         candlestick_dataCopy.at[index, 'range'] = row['High'] - row['Low']
     
@@ -131,6 +135,8 @@ if (bootstrap_success):
 
         # loop over candlestick patterns and check if any are present
         for key, candle_pattern in candlestick_patterns.items():
+            print('PROCESSING PATTERN: ' + candle_pattern.pattern_name)
+
             candle_pattern_last_index = (index - candlestick_frame_size) + candle_pattern.candle_count #candle pattern might not need full frame size
             candlestick_dataCopy.at[candle_pattern_last_index, candle_pattern.pattern_name] = candle_pattern.check_candlesticks_match_pattern(candlestick_frame)
 
